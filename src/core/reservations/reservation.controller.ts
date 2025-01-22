@@ -16,6 +16,7 @@ import { RequestUser } from 'types/request-user'
 import { UpdateReservationDto } from './dto/update'
 import {
     ApiBadRequestResponse,
+    ApiBearerAuth,
     ApiConflictResponse,
     ApiCreatedResponse,
     ApiInternalServerErrorResponse,
@@ -23,9 +24,11 @@ import {
     ApiOkResponse,
     ApiOperation,
     ApiQuery,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
 @Controller('reservations')
+@ApiBearerAuth()
 @Auth()
 export class ReservationController {
     constructor(private readonly reservationService: ReservationService) {}
@@ -40,6 +43,10 @@ export class ReservationController {
     @ApiConflictResponse({
         description:
             'A reservation between this client and business already exists.',
+    })
+    @ApiUnauthorizedResponse({
+        description:
+            "You don't have permission to create a reservation, only clients can",
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error',

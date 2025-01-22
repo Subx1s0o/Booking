@@ -36,7 +36,14 @@ export class UsersService {
     }
 
     async getUserById(id: string) {
-        return await this.prisma.user.findUnique({ where: { id } })
+        try {
+            return await this.prisma.user.findUnique({
+                omit: { password: true },
+                where: { id },
+            })
+        } catch {
+            throw new NotFoundException('The user wasnt found')
+        }
     }
 
     async updateUser(id: string, data) {

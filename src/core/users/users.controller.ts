@@ -20,11 +20,30 @@ import {
     ApiResponse,
     ApiQuery,
     ApiParam,
+    ApiBearerAuth,
 } from '@nestjs/swagger'
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
+
+    @ApiOperation({ summary: 'Get current user' })
+    @ApiOkResponse({
+        description: 'Successfully fetched user.',
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'User not found.',
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.',
+    })
+    @ApiBearerAuth()
+    @Auth()
+    @Get('me')
+    async getMe(@Req() req: RequestUser) {
+        return await this.usersService.getUserById(req.user.id)
+    }
 
     @ApiOperation({ summary: 'Get all users' })
     @ApiQuery({
@@ -117,13 +136,11 @@ export class UsersController {
             limit,
         )
     }
+
     @ApiOperation({ summary: 'Get user by ID' })
     @ApiParam({ name: 'id', description: 'User ID', required: true })
     @ApiOkResponse({
         description: 'Successfully fetched user.',
-    })
-    @ApiBadRequestResponse({
-        description: 'Invalid user ID.',
     })
     @ApiResponse({
         status: 404,
@@ -151,6 +168,7 @@ export class UsersController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.',
     })
+    @ApiBearerAuth()
     @Patch()
     @Auth()
     async updateUser(@Req() req: RequestUser, @Body() data: UpdateUserDto) {
@@ -171,6 +189,7 @@ export class UsersController {
     @ApiInternalServerErrorResponse({
         description: 'Internal server error.',
     })
+    @ApiBearerAuth()
     @Delete()
     @Auth()
     async deleteUser(@Req() req: RequestUser) {
