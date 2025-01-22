@@ -9,29 +9,30 @@ datasource db {
 }
 
 model User {
-  id         String  @id @default(auto()) @map("_id") @db.ObjectId
-  firstName  String
-  secondName String
-  password   String
-  phone      Int?
-  email      String  @unique
-  role       Roles
-  address    String?
-
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName            String
+  secondName           String
+  password             String
+  phone                Int?
+  email                String         @unique
+  role                 Roles
+  address              String?
+  job                  String?
   clientReservations   Reservations[] @relation("ClientUserReservations")
   businessReservations Reservations[] @relation("BusinessUserReservations")
 }
 
 model Reservations {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  clientUserId    String   @db.ObjectId
-  businessUserId  String   @db.ObjectId
-  reservationDate DateTime
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  clientUserId    String    @db.ObjectId
+  businessUserId  String    @db.ObjectId
+  reservationDate DateTime?
   openedAt        DateTime
-  duration        Int
-  status          Status
-  clientUser      User     @relation("ClientUserReservations", fields: [clientUserId], references: [id])
-  businessUser    User     @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
+  time            String?
+  duration        Int?
+  status          Status?
+  clientUser      User      @relation("ClientUserReservations", fields: [clientUserId], references: [id])
+  businessUser    User      @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
 
   @@unique([clientUserId, businessUserId])
 }
