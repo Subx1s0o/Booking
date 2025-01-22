@@ -1,5 +1,9 @@
 import { PrismaService } from '@/shared/services/prisma.service'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { User } from '@prisma/client'
 
 @Injectable()
@@ -36,13 +40,25 @@ export class UsersService {
     }
 
     async updateUser(id: string, data) {
-        return await this.prisma.user.update({
-            where: { id },
-            data,
-        })
+        try {
+            return await this.prisma.user.update({
+                omit: { password: true },
+                where: { id },
+                data,
+            })
+        } catch {
+            throw new NotFoundException('The user wasnt found to update')
+        }
     }
 
     async deleteUser(id: string) {
-        return await this.prisma.user.delete({ where: { id } })
+        try {
+            return await this.prisma.user.delete({
+                omit: { password: true },
+                where: { id },
+            })
+        } catch {
+            throw new NotFoundException('The user wasnt found to delete')
+        }
     }
 }

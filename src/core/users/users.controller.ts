@@ -6,9 +6,12 @@ import {
     Param,
     Patch,
     Query,
+    Req,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { Auth } from '@/shared/decorators/Auth'
+import { RequestUser } from 'types/request-user'
+import { UpdateUserDto } from './dto/update'
 
 @Controller('users')
 export class UsersController {
@@ -51,15 +54,15 @@ export class UsersController {
         return await this.usersService.getUserById(id)
     }
 
-    @Patch(':id')
+    @Patch()
     @Auth()
-    async updateUser(@Param('id') id: string, @Body() data) {
-        return await this.usersService.updateUser(id, data)
+    async updateUser(@Req() req: RequestUser, @Body() data: UpdateUserDto) {
+        return await this.usersService.updateUser(req.user.id, data)
     }
 
-    @Delete(':id')
+    @Delete()
     @Auth()
-    async deleteUser(@Param('id') id: string) {
-        return await this.usersService.deleteUser(id)
+    async deleteUser(@Req() req: RequestUser) {
+        return await this.usersService.deleteUser(req.user.id)
     }
 }
