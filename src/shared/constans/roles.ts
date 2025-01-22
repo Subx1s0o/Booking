@@ -1,4 +1,4 @@
-export enum Roles {
-    CLIENT = 'client',
-    BUSINESS = 'business',
-}
+export const Roles = {
+    CLIENT: 'client',
+    BUSINESS: 'business',
+} as const

@@ -1,12 +1,15 @@
 import { Roles } from '@/shared/constans/roles'
+import { Transform } from 'class-transformer'
 import {
     IsEmail,
-    IsEnum,
+    IsIn,
     IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString,
 } from 'class-validator'
+
+import { RolesType } from 'types/Roles'
 
 export class RegisterDto {
     @IsString()
@@ -30,6 +33,7 @@ export class RegisterDto {
     @IsOptional()
     phone?: number
 
-    @IsEnum(Roles)
-    role: Roles
+    @Transform(({ value }) => value.trim())
+    @IsIn(Object.values(Roles))
+    role: RolesType
 }
