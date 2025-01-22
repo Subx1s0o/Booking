@@ -4,9 +4,10 @@ import { ConfigModule } from './common/config/config.module'
 import { PrismaService } from './shared/services/prisma.service'
 import { AuthModule } from './core/auth/auth.module'
 import { ConfigService } from './common/config/config.service'
+import { ReservationModule } from './core/reservations/reservation.module'
 
 @Module({
-    imports: [ConfigModule, UsersModule, AuthModule],
+    imports: [ConfigModule, UsersModule, AuthModule, ReservationModule],
     providers: [PrismaService, ConfigService],
 })
 export class AppModule {}
