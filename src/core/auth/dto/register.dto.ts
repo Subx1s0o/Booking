@@ -1,6 +1,14 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import { Roles } from '@/shared/constans/roles'
+import {
+    IsEmail,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+} from 'class-validator'
 
-export class RegisteerDto {
+export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     firstName: string
@@ -19,5 +27,9 @@ export class RegisteerDto {
 
     @IsNumber()
     @IsNotEmpty()
-    phone: number
+    @IsOptional()
+    phone?: number
+
+    @IsEnum(Roles)
+    role: Roles
 }

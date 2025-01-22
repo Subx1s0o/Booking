@@ -15,6 +15,12 @@ export class UsersController {
         return await this.usersService.getUserById(id)
     }
 
+    @Get('business')
+    async getBusinessUsers() {}
+
+    @Get('client')
+    async getClientUsers() {}
+
     @Patch(':id')
     async updateUser(@Param('id') id: string, @Body() data) {
         return await this.usersService.updateUser(id, data)
