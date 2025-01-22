@@ -9,21 +9,27 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  firstName    String
-  secondName   String
-  password     String
-  phone        Int?
-  email        String         @unique
-  reservations Reservations[] @relation("UserReservations")
-  role         Roles
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  firstName  String
+  secondName String
+  password   String
+  phone      Int?
+  email      String @unique
+  role       Roles
+
+  clientReservations   Reservations[] @relation("ClientUserReservations")
+  businessReservations Reservations[] @relation("BusinessUserReservations")
 }
 
 model Reservations {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  clientId   String @db.ObjectId
-  client     User   @relation("UserReservations", fields: [clientId], references: [id])
-  businessId String
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  clientUserId   String @db.ObjectId
+  businessUserId String @db.ObjectId
+
+  clientUser   User @relation("ClientUserReservations", fields: [clientUserId], references: [id])
+  businessUser User @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
+
+  @@unique([clientUserId, businessUserId])
 }
 
 enum Roles {
