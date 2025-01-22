@@ -3,6 +3,7 @@ import {
     BadRequestException,
     ConflictException,
     Injectable,
+    NotFoundException,
 } from '@nestjs/common'
 
 @Injectable()
@@ -97,10 +98,8 @@ export class ReservationService {
     }
 
     async findOne(reservationId: string) {
-        return await this.prisma.reservations.findFirst({
-            where: {
-                id: reservationId,
-            },
+        const reservation = await this.prisma.reservations.findFirst({
+            where: { id: reservationId },
             include: {
                 clientUser: {
                     select: {
@@ -120,9 +119,23 @@ export class ReservationService {
                 },
             },
         })
+
+        if (!reservation) {
+            throw new NotFoundException('Reservation was not found')
+        }
+
+        return reservation
     }
 
     async updateOne({ id, data }) {
+        const existingReservation = await this.prisma.reservations.findUnique({
+            where: { id },
+        })
+
+        if (!existingReservation) {
+            throw new NotFoundException('Reservation was not found')
+        }
+
         return await this.prisma.reservations.update({
             where: { id },
             data,
@@ -130,6 +143,16 @@ export class ReservationService {
     }
 
     async delete(id: string) {
-        return await this.prisma.reservations.delete({ where: { id } })
+        const existingReservation = await this.prisma.reservations.findUnique({
+            where: { id },
+        })
+
+        if (!existingReservation) {
+            throw new NotFoundException('Reservation was not found')
+        }
+
+        return await this.prisma.reservations.delete({
+            where: { id },
+        })
     }
 }

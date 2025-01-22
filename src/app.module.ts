@@ -7,7 +7,7 @@ import { ConfigService } from './common/config/config.service'
 import { ReservationModule } from './core/reservations/reservation.module'
 
 @Module({
-    imports: [ConfigModule, UsersModule, AuthModule, ReservationModule],
+    imports: [ConfigModule, AuthModule, UsersModule, ReservationModule],
     providers: [PrismaService, ConfigService],
 })
 export class AppModule {}
