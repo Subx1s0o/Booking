@@ -8,7 +8,6 @@ import {
     ApiInternalServerErrorResponse,
     ApiOkResponse,
     ApiOperation,
-    ApiResponse,
 } from '@nestjs/swagger'
 
 @Controller('auth')
