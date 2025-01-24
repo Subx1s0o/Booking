@@ -82,6 +82,8 @@ export class ReservationService {
                     select: {
                         firstName: true,
                         secondName: true,
+                        email: true,
+                        phone: true,
                     },
                 },
                 businessUser: {
@@ -89,6 +91,8 @@ export class ReservationService {
                         firstName: true,
                         secondName: true,
                         job: true,
+                        email: true,
+                        phone: true,
                     },
                 },
             },
