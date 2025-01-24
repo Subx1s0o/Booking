@@ -36,4 +36,14 @@ export class RegisterDto {
     @Transform(({ value }) => value.trim())
     @IsIn(Object.values(Roles))
     role: RolesType
+
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
+    address?: string
+
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
+    job?: string
 }
