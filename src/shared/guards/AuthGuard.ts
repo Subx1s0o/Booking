@@ -14,8 +14,6 @@ export class AuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest()
         const authorizationHeader = request.headers.authorization
 
-        console.log(authorizationHeader)
-
         if (!authorizationHeader) {
             throw new UnauthorizedException('Authorization header is required')
         }
