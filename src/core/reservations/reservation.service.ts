@@ -93,6 +93,7 @@ export class ReservationService {
                         job: true,
                         email: true,
                         phone: true,
+                        address: true,
                     },
                 },
             },
