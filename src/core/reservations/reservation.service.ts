@@ -73,7 +73,7 @@ export class ReservationService {
                 'Page and limit must be valid numbers',
             )
         }
-        return await this.prisma.reservations.findMany({
+        const result = await this.prisma.reservations.findMany({
             where: {
                 OR: [{ clientUserId: userId }, { businessUserId: userId }],
             },
@@ -95,6 +95,13 @@ export class ReservationService {
             skip: (pageNumber - 1) * limitNumber,
             take: limitNumber,
         })
+
+        return {
+            data: result,
+            total: result.length,
+            page: pageNumber,
+            totalPages: Math.ceil(result.length / limitNumber),
+        }
     }
 
     async findOne(reservationId: string) {
