@@ -73,6 +73,13 @@ export class ReservationService {
                 'Page and limit must be valid numbers',
             )
         }
+
+        const totalCount = await this.prisma.reservations.count({
+            where: {
+                OR: [{ clientUserId: userId }, { businessUserId: userId }],
+            },
+        })
+
         const result = await this.prisma.reservations.findMany({
             where: {
                 OR: [{ clientUserId: userId }, { businessUserId: userId }],
@@ -105,7 +112,7 @@ export class ReservationService {
             data: result,
             total: result.length,
             page: pageNumber,
-            totalPages: Math.ceil(result.length / limitNumber),
+            totalPages: Math.ceil(totalCount / limitNumber),
         }
     }
 

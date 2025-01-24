@@ -20,6 +20,10 @@ export class UsersService {
             )
         }
 
+        const totalCount = await this.prisma.user.count({
+            where: filter,
+        })
+
         const data = await this.prisma.user.findMany({
             where: filter,
             omit: { password: true },
@@ -31,7 +35,7 @@ export class UsersService {
             data,
             count: data.length,
             page: pageNumber,
-            totalPages: Math.ceil(data.length / limitNumber),
+            totalPages: Math.ceil(totalCount / limitNumber),
         }
     }
 
