@@ -133,6 +133,7 @@ export class ReservationService {
                         firstName: true,
                         secondName: true,
                         address: true,
+                        email: true,
                         job: true,
                     },
                 },
