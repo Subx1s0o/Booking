@@ -21,6 +21,7 @@ import {
     ApiQuery,
     ApiParam,
     ApiBearerAuth,
+    ApiNotFoundResponse,
 } from '@nestjs/swagger'
 
 @Controller('users')
@@ -103,6 +104,22 @@ export class UsersController {
             page,
             limit,
         )
+    }
+
+    @ApiOperation({ summary: 'Get all reservation occupied time' })
+    @ApiOkResponse({
+        description:
+            'The reservation occupied time has been successfully found.',
+    })
+    @ApiNotFoundResponse({
+        description: 'Business not found',
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error',
+    })
+    @Get(':id/occupied-time')
+    async getAllReservationOccupiedTime(@Param('id') businessId: string) {
+        return await this.usersService.getAllReservationOccupiedTime(businessId)
     }
 
     @ApiOperation({ summary: 'Get client users' })

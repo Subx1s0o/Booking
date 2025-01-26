@@ -72,4 +72,14 @@ export class UsersService {
             throw new NotFoundException('The user wasnt found to delete')
         }
     }
+
+    async getAllReservationOccupiedTime(businessId: string) {
+        return await this.prisma.occupiedTime.findMany({
+            where: {
+                reservation: {
+                    businessUserId: businessId,
+                },
+            },
+        })
+    }
 }

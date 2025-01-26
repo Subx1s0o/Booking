@@ -20,30 +20,28 @@ model User {
   business             String?
   clientReservations   Reservations[] @relation("ClientUserReservations")
   businessReservations Reservations[] @relation("BusinessUserReservations")
-  businessSlots        Slots[]        @relation("BusinessUserSlots")
 }
 
 model Reservations {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  clientUserId    String    @db.ObjectId
-  businessUserId  String    @db.ObjectId
-  reservationDate DateTime?
-  openedAt        DateTime
-  time            String?
-  status          Status?
-  clientUser      User      @relation("ClientUserReservations", fields: [clientUserId], references: [id])
-  businessUser    User      @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
-
-  @@unique([clientUserId, businessUserId])
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  clientUserId   String        @db.ObjectId
+  businessUserId String        @db.ObjectId
+  openedAt       DateTime      @default(now())
+  status         Status
+  clientUser     User          @relation("ClientUserReservations", fields: [clientUserId], references: [id])
+  businessUser   User          @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
+  OccupiedTime   OccupiedTime?
 }
 
-model Slots {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  businessUserId String   @db.ObjectId
-  date           DateTime @unique
-  time           String
-  isBooked       Boolean  @default(false)
-  businessUser   User     @relation("BusinessUserSlots", fields: [businessUserId], references: [id])
+model OccupiedTime {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  reservationId String       @unique @db.ObjectId
+  reservation   Reservations @relation(fields: [reservationId], references: [id])
+  date          DateTime
+  time          String
+  createdAt     DateTime     @default(now())
+
+  @@unique([date])
 }
 
 enum Roles {

@@ -26,6 +26,7 @@ import {
     ApiQuery,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
+import { CreateReservationDto } from './dto/create'
 
 @Controller('reservations')
 @ApiBearerAuth()
@@ -53,8 +54,16 @@ export class ReservationController {
     })
     @Auth('client')
     @Post(':id')
-    async create(@Param('id') businessId: string, @Req() req: RequestUser) {
-        return await this.reservationService.create(businessId, req.user.id)
+    async create(
+        @Param('id') businessId: string,
+        @Req() req: RequestUser,
+        @Body() data: CreateReservationDto,
+    ) {
+        return await this.reservationService.create(
+            businessId,
+            req.user.id,
+            data,
+        )
     }
 
     @ApiOperation({ summary: 'Finding all reservations' })
@@ -117,6 +126,30 @@ export class ReservationController {
             id: reservationId,
             data: updateDto,
         })
+    }
+
+    @ApiOperation({ summary: 'Update the time for a reservation' })
+    @ApiOkResponse({
+        description: 'The reservation time has been successfully updated.',
+    })
+    @ApiBadRequestResponse({
+        description: 'Invalid reservation ID or time format',
+    })
+    @ApiConflictResponse({
+        description: 'This time slot is already occupied.',
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error',
+    })
+    @Patch(':id/time')
+    async updateReservationTime(
+        @Param('id') reservationId: string,
+        @Body() data: CreateReservationDto,
+    ) {
+        return await this.reservationService.updateReservationTime(
+            reservationId,
+            data,
+        )
     }
 
     @ApiOperation({ summary: 'Delete a reservation' })
