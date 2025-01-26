@@ -1,14 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Statuses } from '@/shared/constans/statuses'
 import { Transform, Type } from 'class-transformer'
-import {
-    IsDate,
-    IsIn,
-    IsNumber,
-    IsOptional,
-    Matches,
-    Min,
-} from 'class-validator'
+import { IsDate, IsIn, IsOptional, Matches } from 'class-validator'
 import { StatusesType } from 'types/statuses.type'
 
 export class UpdateReservationDto {
@@ -43,14 +36,4 @@ export class UpdateReservationDto {
     @Type(() => Date)
     @IsOptional()
     reservationDate: Date
-
-    @ApiPropertyOptional({
-        description: 'Duration of the reservation (minimum 15m)',
-        example: 30,
-        minimum: 15,
-    })
-    @IsOptional()
-    @IsNumber()
-    @Min(15, { message: 'Duration must be at least 15 minutes' })
-    duration: number
 }

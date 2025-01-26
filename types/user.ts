@@ -9,5 +9,5 @@ export type User = {
     email: string
     role: RolesType
     address?: string
-    job?: string
+    business?: string
 }

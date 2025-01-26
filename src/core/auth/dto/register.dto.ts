@@ -72,11 +72,11 @@ export class RegisterDto {
     address?: string
 
     @ApiPropertyOptional({
-        description: 'Job title of the user',
-        example: 'Software Engineer',
+        description: 'Business title of the user',
+        example: 'Hotel California',
     })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    job?: string
+    business?: string
 }

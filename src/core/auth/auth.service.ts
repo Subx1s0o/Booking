@@ -40,6 +40,7 @@ export class AuthService {
             role: existingUser.role,
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...user } = existingUser
 
         return {

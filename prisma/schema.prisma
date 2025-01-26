@@ -17,9 +17,10 @@ model User {
   email                String         @unique
   role                 Roles
   address              String?
-  job                  String?
+  business             String?
   clientReservations   Reservations[] @relation("ClientUserReservations")
   businessReservations Reservations[] @relation("BusinessUserReservations")
+  businessSlots        Slots[]        @relation("BusinessUserSlots")
 }
 
 model Reservations {
@@ -29,12 +30,20 @@ model Reservations {
   reservationDate DateTime?
   openedAt        DateTime
   time            String?
-  duration        Int?
   status          Status?
   clientUser      User      @relation("ClientUserReservations", fields: [clientUserId], references: [id])
   businessUser    User      @relation("BusinessUserReservations", fields: [businessUserId], references: [id])
 
   @@unique([clientUserId, businessUserId])
+}
+
+model Slots {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  businessUserId String   @db.ObjectId
+  date           DateTime @unique
+  time           String
+  isBooked       Boolean  @default(false)
+  businessUser   User     @relation("BusinessUserSlots", fields: [businessUserId], references: [id])
 }
 
 enum Roles {
