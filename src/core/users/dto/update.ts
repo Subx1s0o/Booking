@@ -31,4 +31,9 @@ export class UpdateUserDto {
     @IsString()
     @IsOptional()
     address?: string
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    business?: string
 }
