@@ -5,9 +5,16 @@ import { PrismaService } from './shared/services/prisma.service'
 import { AuthModule } from './core/auth/auth.module'
 import { ConfigService } from './common/config/config.service'
 import { ReservationModule } from './core/reservations/reservation.module'
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module'
 
 @Module({
-    imports: [ConfigModule, AuthModule, UsersModule, ReservationModule],
+    imports: [
+        ConfigModule,
+        AuthModule,
+        UsersModule,
+        ReservationModule,
+        CloudinaryModule,
+    ],
     providers: [PrismaService, ConfigService],
 })
 export class AppModule {}

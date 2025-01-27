@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Post,
+    UploadedFile,
+    UseInterceptors,
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto, RegisterDto } from './dto'
 import {
@@ -9,6 +15,7 @@ import {
     ApiOkResponse,
     ApiOperation,
 } from '@nestjs/swagger'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @Controller('auth')
 export class AuthController {
@@ -30,20 +37,24 @@ export class AuthController {
     }
 
     @Post('register')
-    @ApiOperation({ summary: 'User registration' })
+    @ApiOperation({ summary: 'User registration with optional photo' })
     @ApiCreatedResponse({
-        description: 'The user has been successfully registered in',
+        description: 'The user has been successfully registered',
     })
     @ApiBadRequestResponse({
-        description: 'User email or password is invalid',
+        description: 'Invalid input data',
     })
     @ApiConflictResponse({
-        description: 'The user already exists',
+        description: 'User already exists',
     })
     @ApiInternalServerErrorResponse({
         description: 'Internal server error',
     })
-    async register(@Body() data: RegisterDto) {
-        return await this.authService.register(data)
+    @UseInterceptors(FileInterceptor('photo'))
+    async register(
+        @Body() data: RegisterDto,
+        @UploadedFile() file: File & { buffer: Buffer },
+    ) {
+        return await this.authService.register(data, file)
     }
 }

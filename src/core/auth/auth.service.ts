@@ -2,6 +2,7 @@ import {
     BadRequestException,
     ConflictException,
     Injectable,
+    InternalServerErrorException,
 } from '@nestjs/common'
 
 import { LoginDto, RegisterDto } from './dto'
@@ -9,12 +10,14 @@ import { PrismaService } from '@/shared/services/prisma.service'
 import * as bcrypt from 'bcrypt'
 import { Prisma, User } from '@prisma/client'
 import { JwtService } from '@nestjs/jwt'
+import { CloudinaryService } from '@/common/cloudinary/cloudinary.service'
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly jwt: JwtService,
+        private readonly cloudinaryService: CloudinaryService,
     ) {}
 
     async login(data: LoginDto) {
@@ -49,19 +52,38 @@ export class AuthService {
         }
     }
 
-    async register(data: RegisterDto) {
+    async register(data: RegisterDto, file?: File & { buffer: Buffer }) {
         const existingUser = await this.checkUser({
             email: data.email,
         })
+
         if (existingUser) {
             throw new ConflictException('User already exists')
         }
 
         const hashPassword = await bcrypt.hash(data.password, 10)
 
+        let photoUrl: string | null = null
+
+        if (file) {
+            try {
+                photoUrl = await this.cloudinaryService.uploadImage(file.buffer)
+                console.log(photoUrl || undefined)
+            } catch (e) {
+                console.log(e)
+                throw new InternalServerErrorException(
+                    'Error uploading image to Cloudinary',
+                )
+            }
+        }
+
         const user = await this.prisma.user.create({
             omit: { password: true },
-            data: { ...data, password: hashPassword },
+            data: {
+                ...data,
+                password: hashPassword,
+                photo: photoUrl,
+            },
         })
 
         const sessionToken = this.generateSessionToken({

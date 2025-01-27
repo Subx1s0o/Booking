@@ -1,12 +1,16 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Delete,
     Get,
+    InternalServerErrorException,
     Param,
     Patch,
     Query,
     Req,
+    UploadedFile,
+    UseInterceptors,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { Auth } from '@/shared/decorators/Auth'
@@ -23,6 +27,7 @@ import {
     ApiBearerAuth,
     ApiNotFoundResponse,
 } from '@nestjs/swagger'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @Controller('users')
 export class UsersController {
@@ -190,6 +195,39 @@ export class UsersController {
     @Auth()
     async updateUser(@Req() req: RequestUser, @Body() data: UpdateUserDto) {
         return await this.usersService.updateUser(req.user.id, data)
+    }
+
+    @ApiOperation({ summary: 'Update user photo' })
+    @ApiOkResponse({
+        description: 'Successfully updated user photo.',
+    })
+    @ApiBadRequestResponse({
+        description: 'Invalid input data.',
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'User not found.',
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Internal server error.',
+    })
+    @ApiBearerAuth()
+    @Patch('photo')
+    @Auth()
+    @UseInterceptors(FileInterceptor('photo'))
+    async updateUserPhoto(
+        @Req() req: RequestUser,
+        @UploadedFile() file: File & { buffer: Buffer },
+    ) {
+        if (!file) {
+            throw new BadRequestException('No file uploaded')
+        }
+
+        try {
+            return await this.usersService.updateUserPhoto(req.user.id, file)
+        } catch {
+            throw new InternalServerErrorException('Error updating user photo')
+        }
     }
 
     @ApiOperation({ summary: 'Delete user' })

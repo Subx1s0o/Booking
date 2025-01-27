@@ -17,6 +17,7 @@ model User {
   email                String         @unique
   role                 Roles
   address              String?
+  photo                String?
   business             String?
   clientReservations   Reservations[] @relation("ClientUserReservations")
   businessReservations Reservations[] @relation("BusinessUserReservations")

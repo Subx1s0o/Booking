@@ -51,8 +51,10 @@ export class RegisterDto {
     })
     @IsNumber()
     @IsOptional()
+    @Transform(({ value }) => {
+        return typeof value === 'string' ? parseInt(value, 10) : value
+    })
     phone?: number
-
     @ApiProperty({
         description: 'User Role',
         enum: Object.values(Roles),

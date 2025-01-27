@@ -7,9 +7,11 @@ import { AuthController } from './auth.controller'
 import { ConfigModule } from '@nestjs/config'
 import { AuthService } from './auth.service'
 import { PrismaService } from '@/shared/services/prisma.service'
+import { CloudinaryModule } from '@/common/cloudinary/cloudinary.module'
 
 @Module({
     imports: [
+        CloudinaryModule,
         ConfigModule,
         JwtModule.registerAsync({
             global: true,

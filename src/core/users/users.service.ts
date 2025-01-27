@@ -1,14 +1,19 @@
+import { CloudinaryService } from '@/common/cloudinary/cloudinary.service'
 import { PrismaService } from '@/shared/services/prisma.service'
 import {
     BadRequestException,
     Injectable,
+    InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common'
 import { User } from '@prisma/client'
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly cloudinaryService: CloudinaryService,
+    ) {}
 
     async getAllUsers(filter?: Partial<User>, page?: string, limit?: string) {
         const pageNumber = page ? Number(page) : 1
@@ -70,6 +75,34 @@ export class UsersService {
             })
         } catch {
             throw new NotFoundException('The user wasnt found to delete')
+        }
+    }
+
+    async updateUserPhoto(
+        userId: string,
+        file: File & { buffer: Buffer },
+    ): Promise<Omit<User, 'password'>> {
+        try {
+            const photoUrl = await this.cloudinaryService.uploadImage(
+                file.buffer,
+            )
+
+            const user = await this.prisma.user.findUnique({
+                where: { id: userId },
+            })
+            if (!user) {
+                throw new NotFoundException('User not found')
+            }
+
+            const newUser = await this.prisma.user.update({
+                omit: { password: true },
+                where: { id: userId },
+                data: { photo: photoUrl },
+            })
+
+            return newUser
+        } catch {
+            throw new InternalServerErrorException('Error updating user photo')
         }
     }
 
