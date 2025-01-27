@@ -90,6 +90,7 @@ export class ReservationService {
                 secondName: business.secondName,
                 address: business.address,
                 business: business.business,
+                photo: business.photo,
             },
         }
     }
@@ -131,6 +132,7 @@ export class ReservationService {
                         email: true,
                         phone: true,
                         address: true,
+                        photo: true,
                     },
                 },
                 OccupiedTime: {
@@ -180,6 +182,7 @@ export class ReservationService {
                         address: true,
                         email: true,
                         business: true,
+                        photo: true,
                     },
                 },
                 OccupiedTime: {
