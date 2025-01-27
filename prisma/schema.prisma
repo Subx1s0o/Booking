@@ -37,7 +37,7 @@ model Reservations {
 model OccupiedTime {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   reservationId String       @unique @db.ObjectId
-  reservation   Reservations @relation(fields: [reservationId], references: [id])
+  reservation   Reservations @relation(fields: [reservationId], references: [id], onDelete: Cascade)
   date          DateTime
   time          String
   createdAt     DateTime     @default(now())

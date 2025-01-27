@@ -224,10 +224,17 @@ export class ReservationService {
     async delete(id: string) {
         const existingReservation = await this.prisma.reservations.findUnique({
             where: { id },
+            include: { OccupiedTime: true },
         })
 
         if (!existingReservation) {
             throw new NotFoundException('Reservation was not found')
+        }
+
+        if (existingReservation.OccupiedTime) {
+            await this.prisma.occupiedTime.delete({
+                where: { reservationId: existingReservation.id },
+            })
         }
 
         return await this.prisma.reservations.delete({
